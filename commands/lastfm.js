@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { last_fm_api, last_fm_ss, color } = require(`../config.json`);
+const { last_fm_api, last_fm_ss, color, MongoPass } = require(`../config.json`);
 const LastFmApi = require('lastfm-api-client');
 const { MessageEmbed } = require(`discord.js`)
 const { ErrEmbed } = require(`../exports/errEmbed.js`)
@@ -8,8 +8,8 @@ const LastFmClient = new LastFmApi({
     apiKey   : `${last_fm_api}`,
     apiSecret: `${last_fm_ss}`
 });
-
-
+const Keyv = require(`keyv`)
+const lastFMUN = new Keyv(`mongodb+srv://joey:${MongoPass}@cosmic.rveuw.mongodb.net/?retryWrites=true&w=majority`, { collection: "lastFMusernames" });
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -20,27 +20,64 @@ module.exports = {
             .setDescription(`idk if this actually shows but`)
             .addSubcommand(subcommand =>
                 subcommand.setName(`artist`)
-                .setDescription(`gets your top 10 artists`))
+                .setDescription(`gets the top 10 artists`)
+                .addUserOption(option =>
+                    option.setName(`user`)
+                    .setDescription(`user to search`)
+                    .setRequired(false)))
             .addSubcommand(subcommand => 
                 subcommand.setName(`album`)
-                .setDescription(`gets your top 10 albums`))
+                .setDescription(`gets the top 10 albums`)
+                .addUserOption(option =>
+                    option.setName(`user`)
+                    .setDescription(`user to search`)
+                    .setRequired(false)))
             .addSubcommand(subcommand =>
                 subcommand.setName(`tracks`)
-                .setDescription(`gets your top 10 tracks`)))
+                .setDescription(`gets the top 10 tracks`)
+                .addUserOption(option =>
+                    option.setName(`user`)
+                    .setDescription(`user to search`)
+                    .setRequired(false))))
         .addSubcommand(subcommand =>
             subcommand.setName(`nowplaying`)
-            .setDescription(`requests the last.fm api for your currently playing song`))
+            .setDescription(`requests the last.fm api for the currently playing song`)
+            .addUserOption(option =>
+                option.setName(`user`)
+                .setDescription(`user to search`)
+                .setRequired(false)))
         .addSubcommand(subcommand =>
             subcommand.setName(`recents`)
-            .setDescription(`requests the last.fm api for your recent 10 tracks`))
+            .setDescription(`requests the last.fm api for the recent 10 tracks`)
+            .addUserOption(option =>
+                option.setName(`user`)
+                .setDescription(`user to search`)
+                .setRequired(false)))
         .addSubcommand(subcommand => 
             subcommand.setName(`scrobbles`)
-            .setDescription(`requests the last.fm api for your scrobble count`)),
+            .setDescription(`requests the last.fm api for the scrobble count`)
+            .addUserOption(option =>
+                option.setName(`user`)
+                .setDescription(`user to search`)
+                .setRequired(false)))
+        .addSubcommand(subcommand =>
+            subcommand.setName(`set`)
+            .setDescription(`sets your last.fm username`)
+            .addStringOption(option =>
+                option.setName(`username`)
+                .setDescription(`your last.fm username`)
+                .setRequired(true))),
 	async execute(interaction) {
 
         if (interaction.options.getSubcommand() === "nowplaying") {
+            let user = interaction.options.getUser(`user`);
+            if (!user) user = interaction.user
+            const lfmu = await lastFMUN.get(user.id)
+            if (lfmu === "undefined") {
+                return interaction.reply({ content: "either you or this person has not set their last.fm username! use `/lastfm set (username)` to set a username." })
+            }
             const a = await LastFmClient.user.getRecentTracks({
-                user: "joeywastaken",
+                user: `${lfmu}`,
                 limit: "1"
             })
 
@@ -52,25 +89,49 @@ module.exports = {
                 ${a.recenttracks.track[0].album["#text"]}`)
                 .setThumbnail(`${a.recenttracks.track[0].image[3]["#text"]}`)
 
-                return interaction.reply({ embeds: [embed1a] })
+                await interaction.deferReply()
+
+                return interaction.editReply({ embeds: [embed1a] })
         }
 
         if (interaction.options.getSubcommand() === "scrobbles") {
+            let user = interaction.options.getUser(`user`);
+            if (!user) user = interaction.user
+            const lfmu = await lastFMUN.get(user.id)
+            if (lfmu === "undefined") {
+                return interaction.reply({ content: "either you or this person has not set their last.fm username! use `/lastfm set (username)` to set a username." })
+            }
             const f = await LastFmClient.user.getInfo({
-                user: "joeywastaken",
+                user: `${lfmu}`,
             })
 
             const embed5 = new MessageEmbed()
             .setColor(`${color}`)
             .setTitle(`__**scrobble count**__`)
-            .setDescription(stripIndents`you have **${f.user.playcount}** scrobbles!`)
+            .setDescription(stripIndents`there are **${f.user.playcount}** scrobbles!`)
 
-            return interaction.reply({ embeds: [embed5] })
+            await interaction.deferReply()
+
+            return interaction.editReply({ embeds: [embed5] })
+        }
+
+        if (interaction.options.getSubcommand() === "set") {
+            const stringVal = interaction.options.getString(`username`);
+
+            await lastFMUN.set(interaction.user.id, stringVal).catch(e => console.log(e));
+
+            return interaction.reply({ content: `you have successfully set your last.fm username as ${stringVal}!`})
         }
 
         if (interaction.options.getSubcommand() === "recents") {
+            let user = interaction.options.getUser(`user`);
+            if (!user) user = interaction.user
+            const lfmu = await lastFMUN.get(user.id)
+            if (lfmu === "undefined") {
+                return interaction.reply({ content: "either you or this person has not set their last.fm username! use `/lastfm set (username)` to set a username." })
+            }
 		    const e = await LastFmClient.user.getRecentTracks({
-                user: "joeywastaken",
+                user: `${lfmu}`,
                 limit: "10"
             })
 
@@ -98,12 +159,20 @@ module.exports = {
             10. [${e.recenttracks.track[9].name}](${e.recenttracks.track[9].url})
             by ${e.recenttracks.track[9].artist['#text']}`)
 
-            return interaction.reply({ embeds: [embed] })
+            await interaction.deferReply()
+
+            return interaction.editReply({ embeds: [embed] })
         }
 
         if (interaction.options.getSubcommandGroup() === "top" && interaction.options.getSubcommand() === "artist") {
+            let user = interaction.options.getUser(`user`);
+            if (!user) user = interaction.user
+            const lfmu = await lastFMUN.get(user.id)
+            if (lfmu === "undefined") {
+                return interaction.reply({ content: "either you or this person has not set their last.fm username! use `/lastfm set (username)` to set a username." })
+            }
             const b = await LastFmClient.user.getTopArtists({
-                user: "joeywastaken",
+                user: `${lfmu}`,
                 limit: "10"
             })
 
@@ -132,12 +201,20 @@ module.exports = {
             scrobbles: ${b.topartists.artist[9].playcount}`)
             .setThumbnail(`${b.topartists.artist[0].image[3]["#text"]}`);
 
-            return interaction.reply({ embeds: [embed2] })
+            await interaction.deferReply()
+
+            return interaction.editReply({ embeds: [embed2] })
         }
 
         if (interaction.options.getSubcommandGroup() === "top" && interaction.options.getSubcommand() === "album") {
+            let user = interaction.options.getUser(`user`);
+            if (!user) user = interaction.user
+            const lfmu = await lastFMUN.get(user.id)
+            if (lfmu === "undefined") {
+                return interaction.reply({ content: "either you or this person has not set their last.fm username! use `/lastfm set (username)` to set a username." })
+            }
             const c = await LastFmClient.user.getTopAlbums({
-                user: "joeywastaken",
+                user: `${lfmu}`,
                 limit: "10"
             })
 
@@ -176,12 +253,20 @@ module.exports = {
             scrobbles: ${c.topalbums.album[9].playcount}`)
             .setThumbnail(`${c.topalbums.album[0].image[3]["#text"]}`);
 
-            return interaction.reply({ embeds: [embed3] })
+            await interaction.deferReply()
+
+            return interaction.editReply({ embeds: [embed3] })
         }
 
         if (interaction.options.getSubcommandGroup() === "top" && interaction.options.getSubcommand() === "tracks") {
+            let user = interaction.options.getUser(`user`);
+            if (!user) user = interaction.user
+            const lfmu = await lastFMUN.get(user.id)
+            if (lfmu === "undefined") {
+                return interaction.reply({ content: "either you or this person has not set their last.fm username! use `/lastfm set (username)` to set a username." })
+            }
             const d = await LastFmClient.user.getTopTracks({
-                user: "joeywastaken",
+                user: `${lfmu}`,
                 limit: "10"
             })
 
@@ -220,7 +305,9 @@ module.exports = {
             scrobbles: ${d.toptracks.track[9].playcount}`)
             .setThumbnail(`${d.toptracks.track[0].image[3]["#text"]}`);
 
-            return interaction.reply({ embeds: [embed4] })
+            await interaction.deferReply()
+
+            return interaction.editReply({ embeds: [embed4] })
         }
 	},
 };
