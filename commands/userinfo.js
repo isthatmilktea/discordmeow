@@ -23,12 +23,11 @@ module.exports = {
             user = interaction.user 
         }
 
-        const JoinTime = DateTime.local(member.joinedAt).toLocaleString(DateTime.DATETIME_MED);
-        // const RealJoinTime = DateTime.fromISO(JoinTime1)
+        const JoinTime = DateTime.fromJSDate(member.joinedAt).setZone("America/New_York").toLocaleString(DateTime.DATETIME_MED);
         const CachedRoles = member.roles.cache
         .filter(r => r.id !== interaction.guild.id)
         const FilteredRoles = CachedRoles.sort((a, b) => b.position - a.position).map(role => role.toString());
-        const CreateTime = DateTime.local(user.createdAt).toLocaleString(DateTime.DATETIME_MED);
+        const CreateTime = DateTime.fromJSDate(user.createdAt).setZone("America/New_York").toLocaleString(DateTime.DATETIME_MED);
 
         const embed = new MessageEmbed()
         .setColor(member.displayHexColor === "#000000" ? "#ffffff" : member.displayHexColor)

@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require(`discord.js`);
 const { color } = require(`../config.json`);
 const ms = require("ms");
-const moment = require("moment");
+const { DateTime } = require("luxon");
 const { stripIndents } = require(`common-tags`);
 
 module.exports = {
@@ -11,8 +11,8 @@ module.exports = {
 		.setDescription('gives you information about a server'),
 	async execute(interaction) {
 		const ago = ms(Date.now() - interaction.guild.createdTimestamp, { long: true });
-        const text = interaction.guild.channels.cache.filter(channel => channel.type === channel.isTextBased).size;
-        const voice = interaction.guild.channels.cache.filter(channel => channel.type === channel.isVoiceBased).size;
+        const text = interaction.guild.channels.cache.filter(channel => channel.type !== "GUILD_TEXT").size;
+        const voice = interaction.guild.channels.cache.filter(channel => channel.type !== "GUILD_VOICE").size;
 
         const embed = new MessageEmbed()
         .setColor(`${color}`)
@@ -22,7 +22,7 @@ module.exports = {
         - **server id**
         ${interaction.guild.id}
         - **server creation**
-        ${moment(interaction.guild.createdAt, "MM-DD-YYYY hh:mm:ss a")}
+        ${DateTime.fromJSDate(interaction.guild.createdAt).setZone("America/New_York").toLocaleString(DateTime.DATETIME_MED)}
         ${ago} ago.
         - **server owner**
         <@${interaction.guild.ownerId}>
@@ -30,8 +30,8 @@ module.exports = {
         members: ${interaction.guild.memberCount}
         roles: ${interaction.guild.roles.cache.size}
         channels: ${interaction.guild.channels.cache.size}
-        text: ${text} ~BROKEN~
-        voice: ${voice} ~BROKEN~`)
+        text: ${text}
+        voice: ${voice}`)
 
         interaction.reply({ embeds: [embed] })
 	},

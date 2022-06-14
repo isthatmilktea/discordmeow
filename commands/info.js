@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed, version: djsVersion } = require(`discord.js`);
 const { stripIndents } = require(`common-tags`);
 const { color } = require(`../config.json`);
-const { ErrEmbed } = require(`../exports/errEmbed.js`)
+const { ErrEmbed } = require(`../exports/errEmbed.js`);
 // constants and required packages go here
 
 module.exports = {
