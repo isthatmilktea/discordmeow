@@ -40,36 +40,36 @@ module.exports = {
             return interaction.reply({ embeds: [ErrEmbed] });
         }
 
-        if (interaction.options.getSubcommand() === `grant`) {
+        const Sub = interaction.options.getSubcommand()
 
-            await user.roles.add(role)
-            .catch(e => interaction.reply(e));
+        switch (Sub) {
+            case 'grant':
+                await user.roles.add(role)
+                .catch(e => interaction.reply(e));
 
-            const FinEmbed1 = new MessageEmbed()
-            .setColor(`${color}`)
-            .setTitle(`__**role added**__`)
-            .setDescription(stripIndents`- role added: ${role}
-            - user edited: ${user}
-            - moderator: ${interaction.user}`);
+                const FinEmbed1 = new MessageEmbed()
+                .setColor(`${color}`)
+                .setTitle(`__**role added**__`)
+                .setDescription(stripIndents`- role added: ${role}
+                - user edited: ${user}
+                - moderator: ${interaction.user}`);
 
-            return interaction.reply({ embeds: [FinEmbed1] });
+                interaction.reply({ embeds: [FinEmbed1] });
+                    break;
+            case 'revoke':
+                await user.roles.remove(role)
+                .catch(e => interaction.reply(e));
 
-        } 
-        
-        if (interaction.options.getSubcommand() === `revoke`) {
+                const FinEmbed2 = new MessageEmbed()
+                .setColor(`${color}`)
+                .setTitle(`__**role revoked**__`)
+                .setDescription(stripIndents`- role removed: ${role}
+                - user edited: ${user}
+                - moderator ${interaction.user}`);
 
-            await user.roles.remove(role)
-            .catch(e => interaction.reply(e));
-
-            const FinEmbed2 = new MessageEmbed()
-            .setColor(`${color}`)
-            .setTitle(`__**role revoked**__`)
-            .setDescription(stripIndents`- role removed: ${role}
-            - user edited: ${user}
-            - moderator ${interaction.user}`);
-
-            return interaction.reply({ embeds: [FinEmbed2]});
-        }
+                interaction.reply({ embeds: [FinEmbed2]});
+                    break;
+    }
 
 
 	},

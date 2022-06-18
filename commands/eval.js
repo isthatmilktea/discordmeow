@@ -15,7 +15,7 @@ module.exports = {
 	async execute(interaction) {
         const code = interaction.options.getString(`code`)
 
-		if (!interaction.user.id === '630817206145646602') {
+		if (interaction.user.id !== '630817206145646602') {
             return interaction.reply({ embeds: [ErrEmbed], ephemeral: true })
         }
 

@@ -31,32 +31,34 @@ module.exports = {
         const Sub = await interaction.options.getSubcommand()
         
         switch (Sub) {
-            case 'approve':
+            case 'approve': {
                 if (interaction.user.id !== "630817206145646602") {
-                    return interaction.reply({ embeds: [ErrEmbed] });
+                     return interaction.reply({ embeds: [ErrEmbed] });
                 }
                 const user = await interaction.options.getUser(`user`);
                 await inviteList.set(user.id, user.id);
                 interaction.reply({ content: `${user} has been added to the invite list.`, ephemeral: true });
                     break;
-            case 'deny':
+            }
+            case 'deny': {
                 if (interaction.user.id !== "630817206145646602") {
                     return interaction.reply({ embeds: [ErrEmbed] });
                 }
                 const user1 = await interaction.options.getUser(`user`);
                 await inviteList.delete(user1.id);
                 interaction.reply({ content: `${user1} has been removed from the invite list.`, ephemeral: true });
-                    break;
-            case 'link':
-                const approveID = inviteList.get(interaction.user.id);
+                    break; 
+            }
+            case 'link': {
+                const approveID = await inviteList.get(interaction.user.id);
                 if (approveID === undefined) {
                     return interaction.reply({ embeds: [ErrEmbed], ephemeral: true });
-                } else if (approveID === interaction.user.id) {
-                    return interaction.reply({ content: "please do not give this link to any or anywhere public. this is only exclusive access.\nlink: https://discord.com/api/oauth2/authorize?client_id=684941677802029101&permissions=1644971949559&scope=bot", ephemeral: true })
+                }
+                if (approveID === interaction.user.id) {
+                    interaction.reply({ content: "please do not give this link to any or anywhere public. this is only exclusive access.\nlink: https://discord.com/api/oauth2/authorize?client_id=684941677802029101&permissions=1644971949559&scope=bot", ephemeral: true })
                 }
                     break;
-            default:
-                interaction.reply({ content: `you need to provide a subcommand argument? you should know this...`, ephemeral: true });
+            }
         }
 
 	},
