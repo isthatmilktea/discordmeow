@@ -10,7 +10,7 @@ module.exports = {
 		.setName('unlock')
 		.setDescription('unlocks a channel')
         .setDMPermission(false)
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels | PermissionFlagsBits.Administrator),
 	async execute(interaction) {
 		if (!interaction.member.permissions.has("MANAGE_CHANNELS")) {
             return interaction.reply({ embeds: [ErrEmbed] });
