@@ -3,6 +3,7 @@ const { MessageEmbed } = require(`discord.js`)
 const { ErrEmbed } = require(`../exports/errEmbed.js`)
 const { color } = require(`../config.json`);
 const { stripIndents } = require('common-tags');
+const { PermissionFlagsBits } = require('discord-api-types/v10');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -15,7 +16,9 @@ module.exports = {
         .addStringOption(option =>
             option.setName(`reason`)
             .setDescription(`reason for the ban`)
-            .setRequired(false)),
+            .setRequired(false))
+        .setDMPermission(false)
+        .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers | PermissionFlagsBits.Administrator),
 	async execute(interaction) {
 		const user = interaction.options.getUser(`user`)
         let reason = interaction.options.getString(`reason`)
@@ -23,10 +26,6 @@ module.exports = {
         if (!reason) reason = "no reason provided"
 
         if (user.bannable === false) {
-            return interaction.reply({ embeds: [ErrEmbed], ephemeral: true })
-        }
-
-        if (!interaction.member.permissions.has("BAN_MEMBERS")) {
             return interaction.reply({ embeds: [ErrEmbed], ephemeral: true })
         }
 

@@ -2,12 +2,15 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require(`discord.js`);
 const { ErrEmbed } = require(`../exports/errEmbed.js`);
 const { color } = require(`../config.json`);
+const { PermissionFlagsBits } = require('discord-api-types/v10');
 // constants and required packages go here
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('unlock')
-		.setDescription('unlocks a channel'),
+		.setDescription('unlocks a channel')
+        .setDMPermission(false)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
 	async execute(interaction) {
 		if (!interaction.member.permissions.has("MANAGE_CHANNELS")) {
             return interaction.reply({ embeds: [ErrEmbed] });

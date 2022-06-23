@@ -1,7 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { ErrEmbed } = require(`../exports/errEmbed.js`);
 
-
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('shutdown')

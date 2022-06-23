@@ -8,7 +8,8 @@ const { stripIndents } = require(`common-tags`);
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('guild')
-		.setDescription('gives you information about a server'),
+		.setDescription('gives you information about a server')
+        .setDMPermission(false),
 	async execute(interaction) {
 		const ago = ms(Date.now() - interaction.guild.createdTimestamp, { long: true });
         const text = interaction.guild.channels.cache.filter(channel => channel.type !== "GUILD_TEXT").size;

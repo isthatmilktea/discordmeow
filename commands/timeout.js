@@ -4,6 +4,7 @@ const { ErrEmbed } = require(`../exports/errEmbed.js`)
 const { color } = require(`../config.json`);
 const { stripIndents } = require('common-tags');
 const ms = require(`ms`);
+const { PermissionFlagsBits } = require('discord-api-types/v10');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -28,15 +29,13 @@ module.exports = {
         .addStringOption(option =>
             option.setName(`reason`)
             .setDescription(`reason for this members timeout`)
-            .setRequired(true)),
+            .setRequired(true))
+        .setDMPermission(false)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers | PermissionFlagsBits.Administrator),
 	async execute(interaction) {
         const user = interaction.options.getMember(`user`);
         const timeout = interaction.options.getInteger(`timeout`);
         const reason = interaction.options.getString(`reason`);
-
-		if (!interaction.member.permissions.has("MODERATE_MEMBERS")) {
-            return interaction.reply({ embeds: [ErrEmbed] })
-        }
 
         if (interaction.member.id === user.id) {
             return interaction.reply({ embeds: [ErrEmbed] })

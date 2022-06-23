@@ -2,16 +2,16 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require(`discord.js`);
 const { ErrEmbed } = require(`../exports/errEmbed.js`);
 const { color } = require(`../config.json`);
+const { PermissionFlagsBits } = require('discord-api-types/v10');
 // constants and required packages go here
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('lock')
-		.setDescription('locks a channel'),
+		.setDescription('locks a channel')
+        .setDMPermission(false)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels | PermissionFlagsBits.Administrator),
 	async execute(interaction) {
-		if (!interaction.member.permissions.has("MANAGE_CHANNELS")) {
-            return interaction.reply({ embeds: [ErrEmbed] });
-        }
         interaction.channel.permissionOverwrites.create(interaction.channel.guild.roles.everyone, { SEND_MESSAGES: false })
         const embed = new MessageEmbed()
         .setColor(`${color}`)

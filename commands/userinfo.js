@@ -13,7 +13,8 @@ module.exports = {
         .addUserOption(option =>
             option.setName(`user`)
             .setDescription(`who to identify. defaults to interaction author.`)
-            .setRequired(false)),
+            .setRequired(false))
+        .setDMPermission(false),
 	async execute(interaction) {
 		let member = interaction.options.getMember(`user`);
         let user = interaction.options.getUser(`user`);

@@ -3,6 +3,7 @@ const { MessageEmbed } = require(`discord.js`)
 const { ErrEmbed } = require(`../exports/errEmbed.js`)
 const { color } = require(`../config.json`);
 const { stripIndents } = require('common-tags');
+const { PermissionFlagsBits } = require('discord-api-types/v10');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -11,7 +12,9 @@ module.exports = {
         .addNumberOption(option =>
             option.setName(`number`)
             .setDescription(`number of messages to delete`)
-            .setRequired(true)),
+            .setRequired(true))
+        .setDMPermission(false)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages | PermissionFlagsBits.Administrator),
 	async execute(interaction) {
 		const number = interaction.options.getNumber(`number`);
 

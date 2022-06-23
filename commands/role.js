@@ -3,6 +3,7 @@ const { MessageEmbed } = require(`discord.js`)
 const { ErrEmbed } = require(`../exports/errEmbed.js`)
 const { color } = require(`../config.json`);
 const { stripIndents } = require('common-tags');
+const { PermissionFlagsBits } = require('discord-api-types/v10');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -31,14 +32,12 @@ module.exports = {
             .addRoleOption(option =>
                 option.setName(`role`)
                 .setDescription(`what role to take away`)
-                .setRequired(true))),
+                .setRequired(true)))
+            .setDMPermission(false)
+            .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles | PermissionFlagsBits.Administrator),
 	async execute(interaction) {
         const user = interaction.options.getMember(`user`);
         const role = interaction.options.getRole(`role`);
-
-        if (!interaction.member.permissions.has("MANAGE_ROLES")) {
-            return interaction.reply({ embeds: [ErrEmbed] });
-        }
 
         const Sub = interaction.options.getSubcommand()
 
