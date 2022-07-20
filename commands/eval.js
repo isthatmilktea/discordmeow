@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require(`discord.js`);
+const { SlashCommandBuilder, EmbedBuilder } = require(`discord.js`);
 const { ErrEmbed } = require(`../exports/errEmbed.js`)
 const { color } = require(`../config.json`)
 const beautify = require(`beautify`)
@@ -27,7 +26,7 @@ module.exports = {
             const toEval = code;
             let evaluated = eval(toEval);
 
-            let embed = new MessageEmbed()
+            let embed = new EmbedBuilder()
             .setColor(`${color}`)
             .setTitle(`__**evaluation**__`)
             .addField("code imported:", `\`\`\`js\n${beautify(code, { format: "js"})}\n\`\`\``)
@@ -36,7 +35,7 @@ module.exports = {
 
             return interaction.reply({ embeds: [embed], ephemeral: true });
                 } catch (e) {
-                    let embed = new MessageEmbed()
+                    let embed = new EmbedBuilder()
                     .setColor(`${color}`)
                     .setTitle("__**error on evaluation**__")
                     .setDescription(`${e}`)

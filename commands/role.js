@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require(`discord.js`)
+const { SlashCommandBuilder, EmbedBuilder } = require(`discord.js`)
 const { ErrEmbed } = require(`../exports/errEmbed.js`)
 const { color } = require(`../config.json`);
 const { stripIndents } = require('common-tags');
@@ -46,7 +45,7 @@ module.exports = {
                 await user.roles.add(role)
                 .catch(e => interaction.reply(e));
 
-                const FinEmbed1 = new MessageEmbed()
+                const FinEmbed1 = new EmbedBuilder()
                 .setColor(`${color}`)
                 .setTitle(`__**role added**__`)
                 .setDescription(stripIndents`- role added: ${role}
@@ -59,7 +58,7 @@ module.exports = {
                 await user.roles.remove(role)
                 .catch(e => interaction.reply(e));
 
-                const FinEmbed2 = new MessageEmbed()
+                const FinEmbed2 = new EmbedBuilder()
                 .setColor(`${color}`)
                 .setTitle(`__**role revoked**__`)
                 .setDescription(stripIndents`- role removed: ${role}

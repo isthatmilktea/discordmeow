@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require(`discord.js`)
+const { SlashCommandBuilder, EmbedBuilder } = require(`discord.js`)
 const { color } = require(`../config.json`);
 const { stripIndents } = require(`common-tags`)
 // constants and required packages go here
@@ -17,7 +16,7 @@ module.exports = {
 
         const personsAvatar = person.avatarURL({ forceStatic: false, size: 2048 })
 
-		const avatarEmb = new MessageEmbed()
+		const avatarEmb = new EmbedBuilder()
         .setColor(`${color}`)
         .setDescription(stripIndents`${person}'s avatar`)
         .setImage(personsAvatar);

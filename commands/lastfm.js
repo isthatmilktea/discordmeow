@@ -1,7 +1,6 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
 const { last_fm_api, last_fm_ss, color, MongoPass } = require(`../config.json`);
 const LastFmApi = require('lastfm-api-client');
-const { MessageEmbed } = require(`discord.js`)
+const { SlashCommandBuilder, EmbedBuilder } = require(`discord.js`)
 const { ErrEmbed } = require(`../exports/errEmbed.js`)
 const { stripIndents } = require('common-tags');
 const LastFmClient = new LastFmApi({
@@ -81,7 +80,7 @@ module.exports = {
                 limit: "1"
             })
 
-                const embed1a = new MessageEmbed()
+                const embed1a = new EmbedBuilder()
                 .setColor(`${color}`)
                 .setTitle(`__**latest song**__`)
                 .setDescription(stripIndents`[${a.recenttracks.track[0].name}](${a.recenttracks.track[0].url})
@@ -105,7 +104,7 @@ module.exports = {
                 user: `${lfmu}`,
             })
 
-            const embed5 = new MessageEmbed()
+            const embed5 = new EmbedBuilder()
             .setColor(`${color}`)
             .setTitle(`__**scrobble count**__`)
             .setDescription(stripIndents`there are **${f.user.playcount}** scrobbles!`)
@@ -135,7 +134,7 @@ module.exports = {
                 limit: "10"
             })
 
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
             .setColor(`${color}`)
             .setTitle(`__**10 most recent tracks**__`)
             .setDescription(stripIndents`1. [${e.recenttracks.track[0].name}](${e.recenttracks.track[0].url})
@@ -176,7 +175,7 @@ module.exports = {
                 limit: "10"
             })
 
-            const embed2 = new MessageEmbed()
+            const embed2 = new EmbedBuilder()
             .setColor(`${color}`)
             .setTitle(`__**top 10 artists**__`)
             .setDescription(stripIndents`1. [${b.topartists.artist[0].name}](${b.topartists.artist[0].url})
@@ -218,7 +217,7 @@ module.exports = {
                 limit: "10"
             })
 
-            const embed3 = new MessageEmbed()
+            const embed3 = new EmbedBuilder()
             .setColor(`${color}`)
             .setTitle(`__**top 10 albums**__`)
             .setDescription(stripIndents`1. [${c.topalbums.album[0].name}](${c.topalbums.album[0].url})
@@ -270,7 +269,7 @@ module.exports = {
                 limit: "10"
             })
 
-            const embed4 = new MessageEmbed()
+            const embed4 = new EmbedBuilder()
             .setColor(`${color}`)
             .setTitle(`__**top 10 tracks**__`)
             .setDescription(stripIndents`1. [${d.toptracks.track[0].name}](${d.toptracks.track[0].url})

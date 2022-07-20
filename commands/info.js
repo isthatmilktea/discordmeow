@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed, version: djsVersion } = require(`discord.js`);
+const { SlashCommandBuilder, EmbedBuilder, version: djsVersion } = require(`discord.js`);
 const { stripIndents } = require(`common-tags`);
 const { color } = require(`../config.json`);
 const { ErrEmbed } = require(`../exports/errEmbed.js`);
@@ -10,7 +9,7 @@ module.exports = {
 		.setName('info')
 		.setDescription('information about the bot'),
 	async execute(interaction) {
-		const embed1 = new MessageEmbed()
+		const embed1 = new EmbedBuilder()
         .setColor(`${color}`)
         .setDescription(stripIndents`__**bot info**__
         bot instance: ${interaction.client.user.username}

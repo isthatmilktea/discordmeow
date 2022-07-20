@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require(`discord.js`);
+const { SlashCommandBuilder, EmbedBuilder } = require(`discord.js`);
 const { stripIndents } = require(`common-tags`);
 const { color } = require(`../config.json`);
 

@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { ErrEmbed } = require(`../exports/errEmbed.js`)
 const { color } = require(`../config.json`);
 const { stripIndents } = require('common-tags');
@@ -30,7 +29,7 @@ module.exports = {
         const FilteredRoles = CachedRoles.sort((a, b) => b.position - a.position).map(role => role.toString());
         const CreateTime = DateTime.fromJSDate(user.createdAt).setZone("America/New_York").toLocaleString(DateTime.DATETIME_MED);
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
         .setColor(member.displayHexColor === "#000000" ? "#ffffff" : member.displayHexColor)
         .setTitle(`__**user id**__`)
         .setThumbnail(user.avatarURL())

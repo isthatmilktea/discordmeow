@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed, Message } = require(`discord.js`)
+const { SlashCommandBuilder, EmbedBuilder } = require(`discord.js`)
 const { ErrEmbed } = require(`../exports/errEmbed.js`)
 const { color } = require(`../config.json`);
 const { stripIndents } = require('common-tags');
@@ -43,7 +42,7 @@ module.exports = {
 
         await user.timeout(timeout * 60 * 1000, `${interaction.user.username} ; ${reason}`)
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
         .setColor(`${color}`)
         .setTitle(`__**timeout**__`)
         .setDescription(stripIndents`- member timedout: ${user}

@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require(`discord.js`);
+const { SlashCommandBuilder, EmbedBuilder } = require(`discord.js`);
 const { color, MongoPass } = require(`../config.json`);
 const { ErrEmbed } = require(`../exports/errEmbed.js`)
 const Keyv = require(`keyv`)

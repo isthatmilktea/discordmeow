@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { color } = require(`../config.json`)
 const request = require(`request`);
 
@@ -10,7 +9,7 @@ module.exports = {
 	async execute(interaction) {
         request("https://dog.ceo/api/breeds/image/random", { json: true }, (err, res, body) => {
             if (err) { return console.log(err); }
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
             .setColor(`${color}`)
             .setTitle(`From dog.ceo API`)
             .setURL(`https://dog.ceo/dog-api/`)

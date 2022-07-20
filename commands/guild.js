@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require(`discord.js`);
+const { SlashCommandBuilder, EmbedBuilder } = require(`discord.js`);
 const { color } = require(`../config.json`);
 const ms = require("ms");
 const { DateTime } = require("luxon");
@@ -15,7 +14,7 @@ module.exports = {
         const text = interaction.guild.channels.cache.filter(channel => channel.type !== "GUILD_TEXT").size;
         const voice = interaction.guild.channels.cache.filter(channel => channel.type !== "GUILD_VOICE").size;
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
         .setColor(`${color}`)
         .setTitle(`__**server info**__`)
         .setDescription(stripIndents`- **server name**

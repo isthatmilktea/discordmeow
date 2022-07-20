@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require(`discord.js`)
+const { SlashCommandBuilder, EmbedBuilder } = require(`discord.js`)
 const { ErrEmbed } = require(`../exports/errEmbed.js`)
 const { color } = require(`../config.json`);
 const { stripIndents } = require('common-tags');
@@ -30,7 +29,7 @@ module.exports = {
 
         await interaction.channel.bulkDelete(fetched);
 
-        const FinEmbed = new MessageEmbed()
+        const FinEmbed = new EmbedBuilder()
         .setColor(`${color}`)
         .setTitle(`__**purge**__`)
         .setDescription(stripIndents`- amount of messages purged: ${number}

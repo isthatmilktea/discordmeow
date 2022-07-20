@@ -1,7 +1,7 @@
-const { MessageEmbed } = require(`discord.js`);
+const { EmbedBuilder } = require(`discord.js`);
 const { stripIndents } = require(`common-tags`);
 const { color } = require(`../config.json`)
-const ErrEmbed = new MessageEmbed()
+const ErrEmbed = new EmbedBuilder()
 .setColor(`${color}`)
 .setTitle(`__**instance error**__`)
 .setDescription(stripIndents`an error has occured!

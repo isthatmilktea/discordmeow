@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { color } = require(`../config.json`);
 const { getImage } = require(`random-reddit`);
 
@@ -12,7 +11,7 @@ module.exports = {
 
         const img = await getImage(subreddit);
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
         .setColor(`${color}`)
         .setTitle(`__**from r/ManHands**__`)
         .setImage(img)
