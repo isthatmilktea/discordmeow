@@ -17,7 +17,7 @@
     "common-tags": "^1.8.2",
     "dayjs": "^1.11.3",
     "discord-api-types": "^0.35.0",
-    "discord.js": "^13.9.0",
+    "discord.js": "^14.2.0",
     "figlet": "^1.5.2",
     "keyv": "^4.3.0",
     "lastfm-api-client": "^0.1.0",
