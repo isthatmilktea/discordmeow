@@ -1,8 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder } = require(`discord.js`)
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require(`discord.js`)
 const { ErrEmbed } = require(`../exports/errEmbed.js`)
 const { color } = require(`../config.json`);
 const { stripIndents } = require('common-tags');
-const { PermissionFlagsBits } = require('discord-api-types/v10');
 
 module.exports = {
 	data: new SlashCommandBuilder()

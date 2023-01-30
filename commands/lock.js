@@ -1,7 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder } = require(`discord.js`);
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require(`discord.js`);
 const { ErrEmbed } = require(`../exports/errEmbed.js`);
 const { color } = require(`../config.json`);
-const { PermissionFlagsBits } = require('discord-api-types/v10');
+
 // constants and required packages go here
 
 module.exports = {
