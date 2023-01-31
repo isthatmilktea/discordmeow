@@ -72,14 +72,14 @@ module.exports = {
                 if (approvedID === null) {
                     return interaction.reply({ embeds: [ErrEmbed], ephemeral: true });
                 }
-                    interaction.reply({ content: "please do not give this link to any or anywhere public. this is only exclusive access.\nlink: https://discord.com/api/oauth2/authorize?client_id=684941677802029101&permissions=1644971949559&scope=bot", ephemeral: true })
+                    interaction.reply({ content: "please do not give this link to any or anywhere public. this is only exclusive access.\nlink: https://discord.com/api/oauth2/authorize?client_id=1069799337523159102&permissions=4398046511095&scope=bot%20applications.commands", ephemeral: true })
                     break;
             }
             case 'list': {
                 if (interaction.user.id !== `630817206145646602`) {
                     return interaction.reply({ embeds: [ErrEmbed] });
                 };
-                
+
                 const list = await UserStore.find();
 
                 console.log(list)

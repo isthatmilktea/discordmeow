@@ -40,8 +40,8 @@ client.on('interactionCreate', async interaction => {
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
-	console.log(`this instance has been started in ${client.guilds.cache.size} guilds`);
-	client.user.setActivity('everything all at once', { type: "WATCHING" });
+	console.log(`this instance (${client.user.username}) has been started in ${client.guilds.cache.size} guilds`);
+	client.user.setActivity('everything everywhere all at once', { type: "WATCHING" });
 	client.user.setStatus(`idle`);
 });
 
