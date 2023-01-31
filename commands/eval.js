@@ -29,9 +29,11 @@ module.exports = {
             let embed = new EmbedBuilder()
             .setColor(`${color}`)
             .setTitle(`__**evaluation**__`)
-            .addField("code imported:", `\`\`\`js\n${beautify(code, { format: "js"})}\n\`\`\``)
-            .addField("evaluated:", `${evaluated}`)
-            .addField("type of:", `${typeof(evaluated)}`);
+            .addFields(
+                { name: "code imported:", value: `\`\`\`js\n${beautify(code, { format: "js" })}\n\`\`\`` },
+                { name: "evaluated:", value: `${evaluated}` },
+                { name: "type of:", value: `${typeof(evaluated)}` }
+            );
 
             return interaction.reply({ embeds: [embed], ephemeral: true });
                 } catch (e) {

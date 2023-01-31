@@ -1,7 +1,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
-const { token } = require('./config.json');
+const { token, MongoPass } = require('./config.json');
+const mongoose = require(`mongoose`);
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -17,6 +18,10 @@ for (const file of commandFiles) {
 	// With the key as the command name and the value as the exported module
 	client.commands.set(command.data.name, command);
 }
+
+mongoose.connect(`mongodb+srv://joey:${MongoPass}@cosmic.rveuw.mongodb.net/?retryWrites=true&w=majority`);
+
+mongoose.set('strictQuery', true);
 
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;

@@ -1,14 +1,15 @@
 const { last_fm_api, last_fm_ss, color, MongoPass } = require(`../config.json`);
 const LastFmApi = require('lastfm-api-client');
 const { SlashCommandBuilder, EmbedBuilder } = require(`discord.js`)
-const { ErrEmbed } = require(`../exports/errEmbed.js`)
+const { ErrEmbed } = require(`../exports/errEmbed.js`);
+const { LastFMSchematic, LSFModel } = require(`../exports/lastFMDB.js`);
 const { stripIndents } = require('common-tags');
 const LastFmClient = new LastFmApi({
     apiKey   : `${last_fm_api}`,
     apiSecret: `${last_fm_ss}`
 });
-const Keyv = require(`keyv`)
-const lastFMUN = new Keyv(`mongodb+srv://joey:${MongoPass}@cosmic.rveuw.mongodb.net/?retryWrites=true&w=majority`, { collection: "lastFMusernames" });
+// const Keyv = require(`keyv`)
+// const lastFMUN = new Keyv(`mongodb+srv://joey:${MongoPass}@cosmic.rveuw.mongodb.net/?retryWrites=true&w=majority`, { collection: "lastFMusernames" });
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -68,15 +69,18 @@ module.exports = {
                 .setRequired(true))),
 	async execute(interaction) {
 
+
+        let user = interaction.options.getUser(`user`);
+        if (!user) user = interaction.user
+        const FindFM = await LSFModel.findOne({ userId: `${user.id}` });
+        if (interaction.options.getSubcommand() !== "set" && FindFM === null) {
+            return interaction.reply({ content: "either you or this person has not set their last.fm username! use `/lastfm set (username)` to set a username." })
+        }
+
         if (interaction.options.getSubcommand() === "nowplaying") {
-            let user = interaction.options.getUser(`user`);
-            if (!user) user = interaction.user
-            const lfmu = await lastFMUN.get(user.id)
-            if (lfmu === "undefined") {
-                return interaction.reply({ content: "either you or this person has not set their last.fm username! use `/lastfm set (username)` to set a username." })
-            }
+
             const a = await LastFmClient.user.getRecentTracks({
-                user: `${lfmu}`,
+                user: `${FindFM.LastFMUN}`,
                 limit: "1"
             })
 
@@ -94,14 +98,9 @@ module.exports = {
         }
 
         if (interaction.options.getSubcommand() === "scrobbles") {
-            let user = interaction.options.getUser(`user`);
-            if (!user) user = interaction.user
-            const lfmu = await lastFMUN.get(user.id)
-            if (lfmu === "undefined") {
-                return interaction.reply({ content: "either you or this person has not set their last.fm username! use `/lastfm set (username)` to set a username." })
-            }
+
             const f = await LastFmClient.user.getInfo({
-                user: `${lfmu}`,
+                user: `${FindFM.LastFMUN}`,
             })
 
             const embed5 = new EmbedBuilder()
@@ -117,20 +116,25 @@ module.exports = {
         if (interaction.options.getSubcommand() === "set") {
             const stringVal = interaction.options.getString(`username`);
 
-            await lastFMUN.set(interaction.user.id, stringVal).catch(e => console.log(e));
+            if (FindFM !== null) {
+                await LSFModel.updateOne(
+                    { userId: `${interaction.user.id}` },
+                    { $set: { LastFMUN: `${stringVal}` }}
+                )
+            }
 
-            return interaction.reply({ content: `you have successfully set your last.fm username as ${stringVal}!`})
+            if (FindFM === null) {
+                const NEWFM = new LSFModel({ userId: `${interaction.user.id}`, LastFMUN: `${stringVal}` })
+                await NEWFM.save();
+            }
+
+            return interaction.reply({ content: `you have successfully set your last.fm username as ${stringVal}!` })
         }
 
         if (interaction.options.getSubcommand() === "recents") {
-            let user = interaction.options.getUser(`user`);
-            if (!user) user = interaction.user
-            const lfmu = await lastFMUN.get(user.id)
-            if (lfmu === "undefined") {
-                return interaction.reply({ content: "either you or this person has not set their last.fm username! use `/lastfm set (username)` to set a username." })
-            }
+
 		    const e = await LastFmClient.user.getRecentTracks({
-                user: `${lfmu}`,
+                user: `${FindFM.LastFMUN}`,
                 limit: "10"
             })
 
@@ -164,14 +168,8 @@ module.exports = {
         }
 
         if (interaction.options.getSubcommandGroup() === "top" && interaction.options.getSubcommand() === "artist") {
-            let user = interaction.options.getUser(`user`);
-            if (!user) user = interaction.user
-            const lfmu = await lastFMUN.get(user.id)
-            if (lfmu === "undefined") {
-                return interaction.reply({ content: "either you or this person has not set their last.fm username! use `/lastfm set (username)` to set a username." })
-            }
             const b = await LastFmClient.user.getTopArtists({
-                user: `${lfmu}`,
+                user: `${FindFM.LastFMUN}`,
                 limit: "10"
             })
 
@@ -206,14 +204,9 @@ module.exports = {
         }
 
         if (interaction.options.getSubcommandGroup() === "top" && interaction.options.getSubcommand() === "album") {
-            let user = interaction.options.getUser(`user`);
-            if (!user) user = interaction.user
-            const lfmu = await lastFMUN.get(user.id)
-            if (lfmu === "undefined") {
-                return interaction.reply({ content: "either you or this person has not set their last.fm username! use `/lastfm set (username)` to set a username." })
-            }
+
             const c = await LastFmClient.user.getTopAlbums({
-                user: `${lfmu}`,
+                user: `${FindFM.LastFMUN}`,
                 limit: "10"
             })
 
@@ -258,14 +251,9 @@ module.exports = {
         }
 
         if (interaction.options.getSubcommandGroup() === "top" && interaction.options.getSubcommand() === "tracks") {
-            let user = interaction.options.getUser(`user`);
-            if (!user) user = interaction.user
-            const lfmu = await lastFMUN.get(user.id)
-            if (lfmu === "undefined") {
-                return interaction.reply({ content: "either you or this person has not set their last.fm username! use `/lastfm set (username)` to set a username." })
-            }
+            
             const d = await LastFmClient.user.getTopTracks({
-                user: `${lfmu}`,
+                user: `${FindFM.LastFMUN}`,
                 limit: "10"
             })
 

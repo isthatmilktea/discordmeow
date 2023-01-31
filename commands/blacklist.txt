@@ -1,0 +1,30 @@
+const { SlashCommandBuilder, EmbedBuilder } = require(`discord.js`);
+const { color } = require(`../config.json`);
+const { ErrEmbed } = require(`../exports/errEmbed.js`);
+const { BLSchematic, Blacklisteds } = require(`../exports/blacklistDB.js`);
+
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName('blacklist')
+		.setDescription('blacklists a user from using the bot')
+        .addSubcommand(subcommand =>
+            subcommand.setName(`add`)
+            .setDescription(`adds a user to the blacklist`)
+            .addUserOption(option =>
+                option.setName(`user`)
+                .setDescription(`user to blacklist`)
+                .setRequired(true)))
+        .addSubcommand(subcommand =>
+            subcommand.setName(`list`)
+            .setDescription(`shows the list of blacklisted users`))
+        .addSubcommand(subcommand =>
+            subcommand.setName(`remove`)
+            .setDescription(`removes a user from the blacklist`)
+            .addUserOption(option =>
+                option.setName(`user`)
+                .setDescription(`use to remove from blacklist`)
+                .setRequired(true))),
+	async execute(interaction) {
+		// ...
+	},
+};
